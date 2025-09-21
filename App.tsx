@@ -1,20 +1,69 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React from "react";
+import { Provider } from "react-redux";
+import { NavigationContainer } from "@react-navigation/native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import { StatusBar } from "expo-status-bar";
+import {
+  useFonts,
+  Inter_400Regular,
+  Inter_700Bold,
+} from "@expo-google-fonts/inter";
+import { View, ActivityIndicator } from "react-native";
+import "react-native-get-random-values";
+import "react-native-gesture-handler";
+import "react-native-reanimated";
+
+import store, { persistor } from "./store"; // updated
+import RootNavigator from "./components/navigation/RootNavigator";
+import { PersistGate } from "redux-persist/integration/react"; // new
+import { useAppSelector } from "./store/hooks";
+import { DarkTheme, LightTheme } from "./constants/theme";
 
 export default function App() {
+  const [fontsLoaded] = useFonts({
+    Inter_400Regular,
+    Inter_700Bold,
+  });
+
+  if (!fontsLoaded) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <SafeAreaProvider>
+      <Provider store={store}>
+        <PersistGate
+          loading={
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <ActivityIndicator size="large" />
+            </View>
+          }
+          persistor={persistor}
+        >
+          <AppContent />
+        </PersistGate>
+      </Provider>
+    </SafeAreaProvider>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+function AppContent() {
+  const isDarkMode = useAppSelector((state) => state.theme.isDarkMode);
+
+  return (
+    <NavigationContainer theme={isDarkMode ? DarkTheme : LightTheme}>
+      <StatusBar style={isDarkMode ? "light" : "dark"} />
+      <RootNavigator />
+    </NavigationContainer>
+  );
+}

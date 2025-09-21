@@ -1,0 +1,13 @@
+export { default as LandingScreen } from './LandingScreen';
+export { default as TrendingItem } from './components/TrendingItem';
+export { default as TestimonialItem } from './components/TestimonialItem';
+export { default as FeatureCard } from './components/FeatureCard';
+export { default as HeroSection } from './components/HeroSection';
+export { default as FeaturesSection } from './components/FeaturesSection';
+export { default as TrendingSection } from './components/TrendingSection';
+export { default as TestimonialsSection } from './components/TestimonialSection';
+export { default as NewsletterSection } from './components/NewsletterSection';
+export { default as AuthSection } from './components/AuthSection';
+export { useDataFetch } from './hooks/useDataFetch';
+export { fetchTrendingProducts, fetchTestimonials } from './utils/api';
+export * from './types';

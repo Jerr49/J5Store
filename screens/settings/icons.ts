@@ -1,0 +1,16 @@
+export const ICONS = {
+  notifications: "notifications-outline",
+  darkMode: "moon-outline",
+  biometric: "finger-print-outline",
+  password: "lock-closed-outline",
+  payment: "card-outline",
+  shipping: "location-outline",
+  orders: "gift-outline",
+  language: "language-outline",
+  currency: "cash-outline",
+  dataUsage: "wifi-outline",
+  help: "help-circle-outline",
+  contact: "chatbubble-ellipses-outline",
+  privacy: "shield-checkmark-outline",
+  terms: "document-text-outline",
+};
