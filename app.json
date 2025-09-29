@@ -14,6 +14,7 @@
       }
     },
     "android": {
+      "package": "com.jeremiahhires.J5store",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/J5storeLogo.png",
         "backgroundColor": "#ffffff"
