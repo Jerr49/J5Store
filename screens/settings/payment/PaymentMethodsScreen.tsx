@@ -10,7 +10,7 @@ import {
   Platform,
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "../../store";
+import { RootState } from "../../../store";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { useNavigation } from "@react-navigation/native";
 import {
@@ -18,15 +18,15 @@ import {
   FontAwesome5,
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
-import { useTheme } from "../../constants/theme";
+import { useTheme } from "../../../constants/theme";
 import {
   removeMethod,
   setDefaultMethod,
   PaymentMethod,
-} from "../../store/slices/paymentSlice";
+} from "../../../store/slices/paymentSlice";
 import { RectButton, Swipeable } from "react-native-gesture-handler";
 import Animated, { Layout, FadeIn, FadeOut } from "react-native-reanimated";
-import { RootStackParamList } from "../../components/navigation/MainNavigator";
+import { RootStackParamList } from "../../../components/navigation/MainNavigator";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 type NavigationProp = StackNavigationProp<RootStackParamList>;

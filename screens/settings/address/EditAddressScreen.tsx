@@ -12,12 +12,15 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Icon from "react-native-vector-icons/Ionicons";
-import CountryPicker, { Country, CountryCode } from "react-native-country-picker-modal";
+import CountryPicker, {
+  Country,
+  CountryCode,
+} from "react-native-country-picker-modal";
 import { Picker } from "@react-native-picker/picker";
 import { useDispatch } from "react-redux";
-import { updateAddress } from "../../store/slices/shippingSlice";
-import { useTheme } from "../../constants/theme";
-import { countryStates } from "../../constants/countrystates"; 
+import { updateAddress } from "../../../store/slices/shippingSlice";
+import { useTheme } from "../../../constants/theme";
+import { countryStates } from "../../../constants/countrystates";
 
 // ---------- Types ----------
 export type Address = {
@@ -69,14 +72,17 @@ const InputField = ({
 );
 
 // ---------- Main Component ----------
-const EditAddressScreen: React.FC<EditAddressScreenProps> = ({ route, navigation }) => {
+const EditAddressScreen: React.FC<EditAddressScreenProps> = ({
+  route,
+  navigation,
+}) => {
   const { address } = route.params;
   const dispatch = useDispatch();
   const { colors } = useTheme();
 
   const [form, setForm] = useState<Address>({ ...address });
   const [showCountryPicker, setShowCountryPicker] = useState(false);
-const [countryCode, setCountryCode] = useState<CountryCode>("NG"); 
+  const [countryCode, setCountryCode] = useState<CountryCode>("NG");
 
   const handleChange = (key: keyof Address, value: string) => {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -94,7 +100,8 @@ const [countryCode, setCountryCode] = useState<CountryCode>("NG");
     setCountryCode(country.cca2); // update ISO code
     setForm((prev) => ({
       ...prev,
-      country: typeof country.name === "string" ? country.name : country.name.common,
+      country:
+        typeof country.name === "string" ? country.name : country.name.common,
       state: "", // reset state
     }));
     setShowCountryPicker(false);
@@ -130,7 +137,9 @@ const [countryCode, setCountryCode] = useState<CountryCode>("NG");
             icon="call-outline"
             placeholder="Phone Number"
             value={form.phone}
-            onChangeText={(val) => handleChange("phone", val.replace(/[^0-9]/g, ""))}
+            onChangeText={(val) =>
+              handleChange("phone", val.replace(/[^0-9]/g, ""))
+            }
             keyboardType="phone-pad"
             maxLength={11}
             colors={colors}
@@ -154,7 +163,9 @@ const [countryCode, setCountryCode] = useState<CountryCode>("NG");
 
           {/* State Dropdown */}
           {availableStates.length > 0 ? (
-            <View style={[styles.inputContainer, { borderColor: colors.border }]}>
+            <View
+              style={[styles.inputContainer, { borderColor: colors.border }]}
+            >
               <Icon name="map-outline" size={20} color={colors.secondaryText} />
               <Picker
                 selectedValue={form.state}
@@ -182,7 +193,9 @@ const [countryCode, setCountryCode] = useState<CountryCode>("NG");
             icon="mail-outline"
             placeholder="Postal Code"
             value={form.postalCode}
-            onChangeText={(val) => handleChange("postalCode", val.replace(/[^0-9]/g, ""))}
+            onChangeText={(val) =>
+              handleChange("postalCode", val.replace(/[^0-9]/g, ""))
+            }
             keyboardType="numeric"
             maxLength={6}
             colors={colors}
@@ -194,7 +207,12 @@ const [countryCode, setCountryCode] = useState<CountryCode>("NG");
             style={[styles.inputContainer, { borderColor: colors.border }]}
           >
             <Icon name="flag-outline" size={20} color={colors.secondaryText} />
-            <Text style={[styles.input, { color: form.country ? colors.text : colors.secondaryText }]}>
+            <Text
+              style={[
+                styles.input,
+                { color: form.country ? colors.text : colors.secondaryText },
+              ]}
+            >
               {form.country || "Select Country"}
             </Text>
           </TouchableOpacity>

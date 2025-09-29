@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect, useCallback } from "react";
 import { Provider } from "react-redux";
 import { NavigationContainer } from "@react-navigation/native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
+import * as SplashScreen from "expo-splash-screen";
 import {
   useFonts,
   Inter_400Regular,
@@ -13,11 +14,14 @@ import "react-native-get-random-values";
 import "react-native-gesture-handler";
 import "react-native-reanimated";
 
-import store, { persistor } from "./store"; // updated
+import store, { persistor } from "./store";
 import RootNavigator from "./components/navigation/RootNavigator";
-import { PersistGate } from "redux-persist/integration/react"; // new
+import { PersistGate } from "redux-persist/integration/react";
 import { useAppSelector } from "./store/hooks";
 import { DarkTheme, LightTheme } from "./constants/theme";
+
+// 👇 prevent splash from hiding too soon
+SplashScreen.preventAutoHideAsync();
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -25,12 +29,15 @@ export default function App() {
     Inter_700Bold,
   });
 
+  // hide splash once fonts are ready
+  useEffect(() => {
+    if (fontsLoaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
+
   if (!fontsLoaded) {
-    return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" />
-      </View>
-    );
+    return null; // keep splash screen until fonts are ready
   }
 
   return (

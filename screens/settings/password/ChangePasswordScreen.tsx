@@ -10,10 +10,10 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useTheme } from "../../constants/theme";
+import { useTheme } from "../../../constants/theme";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import type { RootStackParamList } from "../../components/navigation/MainNavigator"; // adjust path
+import type { RootStackParamList } from "../../../components/navigation/MainNavigator"; // adjust path
 
 export default function ChangePasswordScreen() {
   const { colors } = useTheme();
@@ -30,10 +30,8 @@ export default function ChangePasswordScreen() {
 
   // Password strength checker
   const getPasswordStrength = (password: string) => {
-    const strongRegex =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}$/;
-    const mediumRegex =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$/;
+    const strongRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}$/;
+    const mediumRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$/;
 
     if (strongRegex.test(password))
       return { label: "Strong", color: colors.success, score: 3 };
@@ -61,7 +59,7 @@ export default function ChangePasswordScreen() {
 
   const handleProceed = () => {
     setSuccessModal(false);
-    navigation.navigate("Settings"); 
+    navigation.navigate("Settings");
   };
 
   return (
@@ -131,10 +129,7 @@ export default function ChangePasswordScreen() {
       {passwordStrength && (
         <View style={styles.strengthWrapper}>
           <View
-            style={[
-              styles.strengthBar,
-              { backgroundColor: colors.border },
-            ]}
+            style={[styles.strengthBar, { backgroundColor: colors.border }]}
           >
             <Animated.View
               style={[
@@ -147,10 +142,7 @@ export default function ChangePasswordScreen() {
             />
           </View>
           <Text
-            style={[
-              styles.strengthText,
-              { color: passwordStrength.color },
-            ]}
+            style={[styles.strengthText, { color: passwordStrength.color }]}
           >
             {passwordStrength.label}
           </Text>
@@ -189,9 +181,7 @@ export default function ChangePasswordScreen() {
         style={[
           styles.button,
           {
-            backgroundColor: isFormValid
-              ? colors.primary
-              : colors.disabled,
+            backgroundColor: isFormValid ? colors.primary : colors.disabled,
           },
         ]}
         disabled={!isFormValid}
@@ -210,9 +200,7 @@ export default function ChangePasswordScreen() {
         onRequestClose={() => setSuccessModal(false)}
       >
         <View style={styles.modalOverlay}>
-          <View
-            style={[styles.modalContent, { backgroundColor: colors.card }]}
-          >
+          <View style={[styles.modalContent, { backgroundColor: colors.card }]}>
             <Ionicons
               name="checkmark-circle"
               size={60}
@@ -223,15 +211,10 @@ export default function ChangePasswordScreen() {
               Password changed successfully!
             </Text>
             <TouchableOpacity
-              style={[
-                styles.modalButton,
-                { backgroundColor: colors.primary },
-              ]}
+              style={[styles.modalButton, { backgroundColor: colors.primary }]}
               onPress={handleProceed}
             >
-              <Text
-                style={[styles.modalButtonText, { color: colors.card }]}
-              >
+              <Text style={[styles.modalButtonText, { color: colors.card }]}>
                 Continue
               </Text>
             </TouchableOpacity>

@@ -12,28 +12,62 @@ interface Address {
   state: string;
   postalCode: string;
   country: string;
+  isDefault?: boolean;
 }
 
 interface AddressCardProps {
   address: Address;
+  isSelected?: boolean; // ✅ new
+  onPress?: () => void; // ✅ new
   onEdit?: () => void;
   onDelete?: () => void;
+  onPressDefault?: () => void;
 }
 
-const AddressCard: React.FC<AddressCardProps> = ({ address, onEdit, onDelete }) => {
+const AddressCard: React.FC<AddressCardProps> = ({
+  address,
+  isSelected = false,
+  onPress,
+  onEdit,
+  onDelete,
+  onPressDefault,
+}) => {
   const { colors } = useTheme();
 
   return (
-    <View
+    <TouchableOpacity
+      onPress={onPress}
+      activeOpacity={0.9}
       style={[
         styles.card,
-        { borderColor: colors.border, backgroundColor: colors.card, shadowColor: colors.text },
+        {
+          borderColor: isSelected ? colors.primary : colors.border,
+          backgroundColor: colors.card,
+          shadowColor: colors.text,
+        },
       ]}
     >
       {/* Header */}
       <View style={styles.cardHeader}>
         <Ionicons name="person-circle-outline" size={28} color={colors.primary} />
         <Text style={[styles.name, { color: colors.text }]}>{address.fullName}</Text>
+
+        {/* Default badge */}
+        {address.isDefault && (
+          <View style={[styles.defaultBadge, { backgroundColor: colors.primary }]}>
+            <Text style={styles.defaultText}>Default</Text>
+          </View>
+        )}
+
+        {/* Selection checkmark */}
+        {isSelected && (
+          <Ionicons
+            name="checkmark-circle"
+            size={22}
+            color={colors.primary}
+            style={{ marginLeft: 8 }}
+          />
+        )}
       </View>
 
       {/* Details */}
@@ -60,18 +94,27 @@ const AddressCard: React.FC<AddressCardProps> = ({ address, onEdit, onDelete }) 
 
       {/* Actions */}
       <View style={styles.actions}>
+        {/* Only show "Set Default" if not already default AND not currently selected */}
+        {onPressDefault && !address.isDefault && !isSelected && (
+          <TouchableOpacity onPress={onPressDefault} style={styles.actionBtn}>
+            <Ionicons name="star-outline" size={22} color={colors.primary} />
+            <Text style={[styles.actionText, { color: colors.primary }]}>Set Default</Text>
+          </TouchableOpacity>
+        )}
+
         {onEdit && (
-          <TouchableOpacity onPress={onEdit}>
+          <TouchableOpacity onPress={onEdit} style={styles.actionBtn}>
             <Ionicons name="create-outline" size={22} color={colors.primary} />
           </TouchableOpacity>
         )}
+
         {onDelete && (
-          <TouchableOpacity onPress={onDelete}>
+          <TouchableOpacity onPress={onDelete} style={styles.actionBtn}>
             <Ionicons name="trash-outline" size={22} color="red" />
           </TouchableOpacity>
         )}
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
@@ -90,8 +133,16 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 12,
+    position: "relative",
   },
   name: { fontSize: 16, fontWeight: "600", marginLeft: 8 },
+  defaultBadge: {
+    marginLeft: "auto",
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 6,
+  },
+  defaultText: { color: "#fff", fontSize: 12, fontWeight: "600" },
   cardBody: { gap: 6 },
   row: { flexDirection: "row", alignItems: "center", marginBottom: 4 },
   text: { marginLeft: 6, fontSize: 14 },
@@ -100,6 +151,16 @@ const styles = StyleSheet.create({
     marginTop: 14,
     justifyContent: "flex-end",
     gap: 18,
+    flexWrap: "wrap",
+  },
+  actionBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+  },
+  actionText: {
+    fontSize: 13,
+    fontWeight: "500",
   },
 });
 

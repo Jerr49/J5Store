@@ -10,11 +10,14 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation, RouteProp, useRoute } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { RootStackParamList } from "../../components/navigation/MainNavigator";
-import { orders, Order } from "../../data/mockOrdersWithItems";
-import { useTheme } from "../../constants/theme";
+import { RootStackParamList } from "../../../components/navigation/MainNavigator";
+import { orders, Order } from "../../../data/mockOrdersWithItems";
+import { useTheme } from "../../../constants/theme";
 
-type OrderHistoryNavigationProp = StackNavigationProp<RootStackParamList, "OrderHistory">;
+type OrderHistoryNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  "OrderHistory"
+>;
 
 const OrderHistoryScreen: React.FC = () => {
   const { colors } = useTheme();
@@ -29,7 +32,8 @@ const OrderHistoryScreen: React.FC = () => {
       <ScrollView contentContainerStyle={{ padding: 20 }}>
         {orders.map((order: Order) => {
           const totalPrice: number = order.items.reduce(
-            (sum: number, item: Order["items"][number]) => sum + item.price * item.quantity,
+            (sum: number, item: Order["items"][number]) =>
+              sum + item.price * item.quantity,
             0
           );
           return (
@@ -39,16 +43,30 @@ const OrderHistoryScreen: React.FC = () => {
               onPress={() => handleOrderPress(order)}
             >
               <View style={{ marginBottom: 10 }}>
-                <Text style={{ color: colors.text, fontWeight: "bold" }}>{order.orderNumber}</Text>
+                <Text style={{ color: colors.text, fontWeight: "bold" }}>
+                  {order.orderNumber}
+                </Text>
                 <Text style={{ color: colors.text }}>{order.date}</Text>
-                <Text style={{ color: colors.text }}>Status: {order.status}</Text>
+                <Text style={{ color: colors.text }}>
+                  Status: {order.status}
+                </Text>
               </View>
               <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 {order.items.map((item: Order["items"][number]) => (
-                  <Image key={item.id} source={{ uri: item.image }} style={styles.thumb} />
+                  <Image
+                    key={item.id}
+                    source={{ uri: item.image }}
+                    style={styles.thumb}
+                  />
                 ))}
               </ScrollView>
-              <Text style={{ color: colors.text, marginTop: 10, fontWeight: "bold" }}>
+              <Text
+                style={{
+                  color: colors.text,
+                  marginTop: 10,
+                  fontWeight: "bold",
+                }}
+              >
                 Total: ${totalPrice.toFixed(2)}
               </Text>
             </TouchableOpacity>

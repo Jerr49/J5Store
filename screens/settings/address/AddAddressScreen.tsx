@@ -14,12 +14,15 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Icon from "react-native-vector-icons/Ionicons";
-import CountryPicker, { Country, CountryCode } from "react-native-country-picker-modal";
+import CountryPicker, {
+  Country,
+  CountryCode,
+} from "react-native-country-picker-modal";
 import { useDispatch } from "react-redux";
-import { addAddress } from "../../store/slices/shippingSlice";
-import { useTheme } from "../../constants/theme";
+import { addAddress } from "../../../store/slices/shippingSlice";
+import { useTheme } from "../../../constants/theme";
 import { v4 as uuidv4 } from "uuid";
-import { countryStates } from "../../constants/countrystates";
+import { countryStates } from "../../../constants/countrystates";
 import { Feather } from "@expo/vector-icons";
 
 const { height: screenHeight } = Dimensions.get("window");
@@ -97,7 +100,8 @@ const AddAddressScreen = ({ navigation }: any) => {
     setCountryCode(code);
     setForm((prev) => ({
       ...prev,
-      country: typeof country.name === "string" ? country.name : country.name.common,
+      country:
+        typeof country.name === "string" ? country.name : country.name.common,
       state: "",
     }));
     setShowCountryPicker(false);
@@ -146,7 +150,9 @@ const AddAddressScreen = ({ navigation }: any) => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-        <Text style={[styles.title, { color: colors.text }]}>Add Shipping Address</Text>
+        <Text style={[styles.title, { color: colors.text }]}>
+          Add Shipping Address
+        </Text>
 
         <InputField
           icon="person-outline"
@@ -160,7 +166,9 @@ const AddAddressScreen = ({ navigation }: any) => {
           icon="call-outline"
           placeholder="Phone Number"
           value={form.phone}
-          onChangeText={(val) => handleChange("phone", val.replace(/[^0-9]/g, ""))}
+          onChangeText={(val) =>
+            handleChange("phone", val.replace(/[^0-9]/g, ""))
+          }
           keyboardType="phone-pad"
           maxLength={11}
           colors={colors}
@@ -192,7 +200,11 @@ const AddAddressScreen = ({ navigation }: any) => {
             style={[
               styles.input,
               {
-                color: form.state ? (isDarkMode ? "whitesmoke" : colors.text) : colors.secondaryText,
+                color: form.state
+                  ? isDarkMode
+                    ? "whitesmoke"
+                    : colors.text
+                  : colors.secondaryText,
               },
             ]}
           >
@@ -247,7 +259,11 @@ const AddAddressScreen = ({ navigation }: any) => {
                   backgroundColor: colors.background,
                 }}
               >
-                <Icon name="search-outline" size={20} color={colors.secondaryText} />
+                <Icon
+                  name="search-outline"
+                  size={20}
+                  color={colors.secondaryText}
+                />
                 <TextInput
                   style={{
                     flex: 1,
@@ -277,10 +293,17 @@ const AddAddressScreen = ({ navigation }: any) => {
                       alignItems: "center",
                     }}
                   >
-                    <Text style={{ color: isDarkMode ? "whitesmoke" : colors.text, fontSize: 16 }}>
+                    <Text
+                      style={{
+                        color: isDarkMode ? "whitesmoke" : colors.text,
+                        fontSize: 16,
+                      }}
+                    >
                       {item}
                     </Text>
-                    {form.state === item && <Feather name="check" size={20} color={colors.accent} />}
+                    {form.state === item && (
+                      <Feather name="check" size={20} color={colors.accent} />
+                    )}
                   </TouchableOpacity>
                 )}
               />
@@ -292,7 +315,9 @@ const AddAddressScreen = ({ navigation }: any) => {
           icon="mail-outline"
           placeholder="Postal Code"
           value={form.postalCode}
-          onChangeText={(val) => handleChange("postalCode", val.replace(/[^0-9]/g, ""))}
+          onChangeText={(val) =>
+            handleChange("postalCode", val.replace(/[^0-9]/g, ""))
+          }
           keyboardType="numeric"
           colors={colors}
         />
@@ -306,7 +331,13 @@ const AddAddressScreen = ({ navigation }: any) => {
           <Text
             style={[
               styles.input,
-              { color: form.country ? (isDarkMode ? "whitesmoke" : colors.text) : colors.secondaryText },
+              {
+                color: form.country
+                  ? isDarkMode
+                    ? "whitesmoke"
+                    : colors.text
+                  : colors.secondaryText,
+              },
             ]}
           >
             {form.country || "Select Country"}

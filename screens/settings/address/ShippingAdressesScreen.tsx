@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import {
   View,
   Text,
@@ -6,15 +6,18 @@ import {
   Animated,
   StyleSheet,
   StatusBar,
-  FlatList,
   Alert,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../store/index";
-import { removeAddress } from "../../store/slices/shippingSlice";
+import { RootState } from "../../../store";
+import {
+  removeAddress,
+  setDefaultAddress,
+  selectAddress,
+} from "../../../store/slices/shippingSlice";
 import { Ionicons } from "@expo/vector-icons";
-import { useTheme } from "../../constants/theme";
-import AddressCard from "../../components/common/AddressCard";
+import { useTheme } from "../../../constants/theme";
+import AddressCard from "../../../components/common/AddressCard";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const HEADER_MAX_HEIGHT = 100;
@@ -27,25 +30,40 @@ const FAB_MIN_WIDTH = 56;
 const ShippingAddressesScreen = ({ navigation }: any) => {
   const { colors } = useTheme();
   const addresses = useSelector((state: RootState) => state.shipping.addresses);
+  const selectedAddress = useSelector(
+    (state: RootState) => state.shipping.selectedAddress
+  );
   const dispatch = useDispatch();
   const insets = useSafeAreaInsets();
 
   const scrollY = useRef(new Animated.Value(0)).current;
   const fabAnim = useRef(new Animated.Value(1)).current; // 1=visible, 0=hidden
 
+  // Sort addresses so default one is always at top
+  const sortedAddresses = [...addresses].sort((a, b) => {
+    if (a.isDefault) return -1;
+    if (b.isDefault) return 1;
+    return 0;
+  });
+
   const handleRemove = (id: string) => {
-    Alert.alert(
-      "Remove Address",
-      "Are you sure you want to delete this address?",
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Delete",
-          style: "destructive",
-          onPress: () => dispatch(removeAddress(id)),
-        },
-      ]
-    );
+    Alert.alert("Remove Address", "Are you sure you want to delete this address?", [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Delete",
+        style: "destructive",
+        onPress: () => dispatch(removeAddress(id)),
+      },
+    ]);
+  };
+
+  const handleSetDefault = (id: string) => {
+    dispatch(setDefaultAddress(id));
+    Alert.alert("Default Address", "This address has been set as your default.");
+  };
+
+  const handleSelectAddress = (id: string) => {
+    dispatch(selectAddress(id));
   };
 
   const handleScroll = Animated.event(
@@ -98,20 +116,26 @@ const ShippingAddressesScreen = ({ navigation }: any) => {
         ]}
       >
         <Animated.Text
-          style={[styles.headerText, { color: "whitesmoke", fontSize: titleSize }]}
+          style={[
+            styles.headerText,
+            { color: "whitesmoke", fontSize: titleSize },
+          ]}
         >
           Shipping Addresses
         </Animated.Text>
       </Animated.View>
 
       <Animated.FlatList
-        data={addresses}
+        data={sortedAddresses}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <AddressCard
             address={item}
+            isSelected={selectedAddress?.id === item.id} // highlight selected one
+            onPress={() => handleSelectAddress(item.id)} // select when tapped
             onEdit={() => navigation.navigate("EditAddress", { address: item })}
             onDelete={() => handleRemove(item.id)}
+            onPressDefault={() => handleSetDefault(item.id)}
           />
         )}
         contentContainerStyle={{
@@ -123,11 +147,7 @@ const ShippingAddressesScreen = ({ navigation }: any) => {
         onScroll={handleScroll}
         ListEmptyComponent={
           <View style={{ marginTop: 100, alignItems: "center" }}>
-            <Ionicons
-              name="home-outline"
-              size={50}
-              color={colors.secondaryText}
-            />
+            <Ionicons name="home-outline" size={50} color={colors.secondaryText} />
             <Text
               style={{
                 marginTop: 10,

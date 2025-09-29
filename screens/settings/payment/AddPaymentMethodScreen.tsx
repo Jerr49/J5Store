@@ -12,12 +12,12 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { addMethod, PaymentMethod } from "../../store/slices/paymentSlice";
+import { addMethod, PaymentMethod } from "../../../store/slices/paymentSlice";
 import { v4 as uuidv4 } from "uuid";
 import { useNavigation } from "@react-navigation/native";
 import { Feather, FontAwesome5 } from "@expo/vector-icons";
-import { useTheme } from "../../constants/theme";
-import { RootState } from "../../store";
+import { useTheme } from "../../../constants/theme";
+import { RootState } from "../../../store";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 
@@ -77,7 +77,9 @@ const CardPreview = ({
         <Text style={styles.cardLabel}>CARD</Text>
         {getCardIcon(type)}
       </View>
-      <Text style={styles.cardNumber}>{maskNumber(number) || "•••• •••• •••• ••••"}</Text>
+      <Text style={styles.cardNumber}>
+        {maskNumber(number) || "•••• •••• •••• ••••"}
+      </Text>
       <View style={styles.cardBottom}>
         <View>
           <Text style={styles.cardLabel}>Cardholder</Text>
@@ -115,11 +117,16 @@ const CreditCardInput = ({
   const [cardType, setCardType] = useState("unknown");
 
   const formatCardNumber = (text: string) =>
-    text.replace(/\D/g, "").replace(/(\d{4})/g, "$1 ").trim().slice(0, 19);
+    text
+      .replace(/\D/g, "")
+      .replace(/(\d{4})/g, "$1 ")
+      .trim()
+      .slice(0, 19);
 
   const formatExpiry = (text: string) => {
     const cleaned = text.replace(/\D/g, "");
-    if (cleaned.length > 2) return `${cleaned.slice(0, 2)}/${cleaned.slice(2, 4)}`;
+    if (cleaned.length > 2)
+      return `${cleaned.slice(0, 2)}/${cleaned.slice(2, 4)}`;
     return cleaned;
   };
 
@@ -139,7 +146,8 @@ const CreditCardInput = ({
     setCardType(type);
     const valid = formatted.replace(/\D/g, "").length === 16;
     onChange({
-      valid: valid && expiry.replace(/\D/g, "").length === 4 && cvv.length === 3,
+      valid:
+        valid && expiry.replace(/\D/g, "").length === 4 && cvv.length === 3,
       values: { number: formatted, expiry, cvv, type },
     });
   };
@@ -149,7 +157,10 @@ const CreditCardInput = ({
     setExpiry(formatted);
     const valid = formatted.replace(/\D/g, "").length === 4;
     onChange({
-      valid: cardNumber.replace(/\D/g, "").length === 16 && valid && cvv.length === 3,
+      valid:
+        cardNumber.replace(/\D/g, "").length === 16 &&
+        valid &&
+        cvv.length === 3,
       values: { number: cardNumber, expiry: formatted, cvv, type: cardType },
     });
   };
@@ -170,10 +181,19 @@ const CreditCardInput = ({
   return (
     <View>
       <View style={styles.inputGroup}>
-        <Text style={[styles.inputLabel, { color: colors.text }]}>Card Number</Text>
+        <Text style={[styles.inputLabel, { color: colors.text }]}>
+          Card Number
+        </Text>
         <View style={{ position: "relative" }}>
           <TextInput
-            style={[styles.input, { backgroundColor: colors.card, color: colors.text, borderColor: colors.border }]}
+            style={[
+              styles.input,
+              {
+                backgroundColor: colors.card,
+                color: colors.text,
+                borderColor: colors.border,
+              },
+            ]}
             placeholder="1234 5678 9012 3456"
             placeholderTextColor={colors.secondaryText}
             value={cardNumber}
@@ -182,7 +202,13 @@ const CreditCardInput = ({
             maxLength={19}
             onFocus={() => setFocusedField("number")}
           />
-          <View style={{ position: "absolute", right: 12, top: Platform.OS === "ios" ? 12 : 10 }}>
+          <View
+            style={{
+              position: "absolute",
+              right: 12,
+              top: Platform.OS === "ios" ? 12 : 10,
+            }}
+          >
             {getCardIcon(cardType)}
           </View>
         </View>
@@ -190,9 +216,18 @@ const CreditCardInput = ({
 
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
         <View style={[styles.inputGroup, { flex: 1, marginRight: 10 }]}>
-          <Text style={[styles.inputLabel, { color: colors.text }]}>Expiry</Text>
+          <Text style={[styles.inputLabel, { color: colors.text }]}>
+            Expiry
+          </Text>
           <TextInput
-            style={[styles.input, { backgroundColor: colors.card, color: colors.text, borderColor: colors.border }]}
+            style={[
+              styles.input,
+              {
+                backgroundColor: colors.card,
+                color: colors.text,
+                borderColor: colors.border,
+              },
+            ]}
             placeholder="MM/YY"
             placeholderTextColor={colors.secondaryText}
             value={expiry}
@@ -205,7 +240,14 @@ const CreditCardInput = ({
         <View style={[styles.inputGroup, { flex: 1 }]}>
           <Text style={[styles.inputLabel, { color: colors.text }]}>CVV</Text>
           <TextInput
-            style={[styles.input, { backgroundColor: colors.card, color: colors.text, borderColor: colors.border }]}
+            style={[
+              styles.input,
+              {
+                backgroundColor: colors.card,
+                color: colors.text,
+                borderColor: colors.border,
+              },
+            ]}
             placeholder="123"
             placeholderTextColor={colors.secondaryText}
             value={cvv}
@@ -229,10 +271,15 @@ const AddPaymentMethodScreen = () => {
   const methods = useSelector((state: RootState) => state.payment.methods);
 
   const [cardData, setCardData] = useState<any>(null);
-  const [formData, setFormData] = useState({ name: "", email: "", account: "" });
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    account: "",
+  });
   const [isProcessing, setIsProcessing] = useState(false);
   const [focusedField, setFocusedField] = useState("");
-  const [selectedMethod, setSelectedMethod] = useState<PaymentMethod["type"]>("card");
+  const [selectedMethod, setSelectedMethod] =
+    useState<PaymentMethod["type"]>("card");
 
   const validateInput = () => {
     if (selectedMethod === "card") {
@@ -246,7 +293,10 @@ const AddPaymentMethodScreen = () => {
       }
     } else {
       if (!formData.email.trim()) {
-        Alert.alert("Missing Information", `Please enter your ${selectedMethod.toUpperCase()} email/account.`);
+        Alert.alert(
+          "Missing Information",
+          `Please enter your ${selectedMethod.toUpperCase()} email/account.`
+        );
         return false;
       }
     }
@@ -261,9 +311,13 @@ const AddPaymentMethodScreen = () => {
       const newMethod: PaymentMethod = {
         id: uuidv4(),
         name: selectedMethod === "card" ? formData.name : formData.email,
-        number: selectedMethod === "card" ? cardData.values.number.replace(/\s/g, "").slice(-4) : undefined,
+        number:
+          selectedMethod === "card"
+            ? cardData.values.number.replace(/\s/g, "").slice(-4)
+            : undefined,
         type: selectedMethod,
-        brand: selectedMethod === "card" ? cardData.values.type : selectedMethod,
+        brand:
+          selectedMethod === "card" ? cardData.values.type : selectedMethod,
         isDefault: methods.length === 0,
       };
       dispatch(addMethod(newMethod));
@@ -278,10 +332,18 @@ const AddPaymentMethodScreen = () => {
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
       {/* <StatusBar barStyle="dark-content" backgroundColor={colors.background} /> */}
       <ScrollView contentContainerStyle={{ padding: 20 }}>
-        <Text style={[styles.title, { color: colors.text }]}>Add Payment Method</Text>
+        <Text style={[styles.title, { color: colors.text }]}>
+          Add Payment Method
+        </Text>
 
         {/* ===== Payment Type Selector ===== */}
-        <View style={{ flexDirection: "row", marginBottom: 20, justifyContent: "space-around" }}>
+        <View
+          style={{
+            flexDirection: "row",
+            marginBottom: 20,
+            justifyContent: "space-around",
+          }}
+        >
           {["card", "paypal", "applepay", "cashapp"].map((method) => (
             <TouchableOpacity
               key={method}
@@ -289,11 +351,14 @@ const AddPaymentMethodScreen = () => {
                 padding: 12,
                 borderRadius: 10,
                 borderWidth: selectedMethod === method ? 2 : 1,
-                borderColor: selectedMethod === method ? colors.accent : colors.border,
+                borderColor:
+                  selectedMethod === method ? colors.accent : colors.border,
               }}
               onPress={() => setSelectedMethod(method as PaymentMethod["type"])}
             >
-              <Text style={{ color: colors.text, fontWeight: "600" }}>{method.toUpperCase()}</Text>
+              <Text style={{ color: colors.text, fontWeight: "600" }}>
+                {method.toUpperCase()}
+              </Text>
             </TouchableOpacity>
           ))}
         </View>
@@ -311,18 +376,29 @@ const AddPaymentMethodScreen = () => {
             />
 
             <View style={styles.inputGroup}>
-              <Text style={[styles.inputLabel, { color: colors.text }]}>Cardholder Name</Text>
+              <Text style={[styles.inputLabel, { color: colors.text }]}>
+                Cardholder Name
+              </Text>
               <TextInput
-                style={[styles.input, { backgroundColor: colors.card, color: colors.text }]}
+                style={[
+                  styles.input,
+                  { backgroundColor: colors.card, color: colors.text },
+                ]}
                 placeholder="John Doe"
                 placeholderTextColor={colors.secondaryText}
                 value={formData.name}
-                onChangeText={(text) => setFormData({ ...formData, name: text })}
+                onChangeText={(text) =>
+                  setFormData({ ...formData, name: text })
+                }
                 onFocus={() => setFocusedField("name")}
               />
             </View>
 
-            <CreditCardInput onChange={setCardData} focusedField={focusedField} setFocusedField={setFocusedField} />
+            <CreditCardInput
+              onChange={setCardData}
+              focusedField={focusedField}
+              setFocusedField={setFocusedField}
+            />
           </>
         ) : (
           <View style={styles.inputGroup}>
@@ -330,7 +406,10 @@ const AddPaymentMethodScreen = () => {
               {selectedMethod.toUpperCase()} Email / Account
             </Text>
             <TextInput
-              style={[styles.input, { backgroundColor: colors.card, color: colors.text }]}
+              style={[
+                styles.input,
+                { backgroundColor: colors.card, color: colors.text },
+              ]}
               placeholder={`Enter ${selectedMethod} email/account`}
               placeholderTextColor={colors.secondaryText}
               value={formData.email}
@@ -364,14 +443,41 @@ const styles = StyleSheet.create({
   inputGroup: { marginBottom: 20 },
   inputLabel: { fontSize: 14, fontWeight: "600", marginBottom: 8 },
   input: { borderWidth: 1, borderRadius: 12, padding: 14, fontSize: 16 },
-  cardPreview: { borderRadius: 16, padding: 20, marginBottom: 30, borderWidth: 1 },
-  cardTop: { flexDirection: "row", justifyContent: "space-between", marginBottom: 20 },
+  cardPreview: {
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 30,
+    borderWidth: 1,
+  },
+  cardTop: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 20,
+  },
   cardLabel: { fontSize: 12, color: "#fff", fontWeight: "600" },
-  cardNumber: { fontSize: 20, color: "#fff", fontWeight: "700", letterSpacing: 2, marginBottom: 20 },
+  cardNumber: {
+    fontSize: 20,
+    color: "#fff",
+    fontWeight: "700",
+    letterSpacing: 2,
+    marginBottom: 20,
+  },
   cardBottom: { flexDirection: "row", justifyContent: "space-between" },
   cardValue: { fontSize: 16, color: "#fff", fontWeight: "600" },
-  cvvOverlay: { position: "absolute", top: 40, right: 20, alignItems: "center" },
-  addButton: { flexDirection: "row", justifyContent: "center", alignItems: "center", padding: 16, borderRadius: 12, marginTop: 10 },
+  cvvOverlay: {
+    position: "absolute",
+    top: 40,
+    right: 20,
+    alignItems: "center",
+  },
+  addButton: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 16,
+    borderRadius: 12,
+    marginTop: 10,
+  },
   addText: { color: "#fff", fontWeight: "700", marginLeft: 8, fontSize: 16 },
 });
 

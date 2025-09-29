@@ -12,17 +12,17 @@ import RegisterScreen from "../../screens/auth/RegisterScreen";
 import VerifyAccountScreen from "../../screens/auth/VerifyAccountScreen";
 import WelcomeScreen from "../../screens/auth/WelcomeScreen";
 import TabNavigator from "./TabNavigator";
-import ChangePasswordScreen from "../../screens/password/ChangePasswordScreen";
+import ChangePasswordScreen from "../../screens/settings/password/ChangePasswordScreen";
 import SettingsScreen from "../../screens/settings/SettingsScreen";
-import PaymentMethodsScreen from "../../screens/payment/PaymentMethodsScreen";
-import AddPaymentMethodScreen from "../../screens/payment/AddPaymentMethodScreen";
-import ShippingAddressesScreen from "../../screens/address/ShippingAdressesScreen";
-import AddAddressScreen from "../../screens/address/AddAddressScreen";
-import EditAddressScreen from "../../screens/address/EditAddressScreen";
-import OrderDetailsScreen from "../../screens/History/OrderHistoryScreen"; 
+import PaymentMethodsScreen from "../../screens/settings/payment/PaymentMethodsScreen";
+import AddPaymentMethodScreen from "../../screens/settings/payment/AddPaymentMethodScreen";
+import ShippingAddressesScreen from "../../screens/settings/address/ShippingAdressesScreen";
+import AddAddressScreen from "../../screens/settings/address/AddAddressScreen";
+import EditAddressScreen from "../../screens/settings/address/EditAddressScreen";
+import OrderDetailsScreen from "../../screens/settings/History/OrderHistoryScreen";
 
 // Types
-import { Address } from "../../screens/address/EditAddressScreen";
+import { Address } from "../../screens/settings/address/EditAddressScreen";
 import OrdersScreen from "../../screens/order/OrdersScreen";
 import { Order } from "../../data/mockOrdersWithItems";
 
@@ -47,7 +47,7 @@ export type RootStackParamList = {
 
   // Others
   OrderHistory: undefined;
-  OrderDetails: { order: Order }; 
+  OrderDetails: { order: Order };
   LanguageSettings: undefined;
   CurrencySettings: undefined;
   HelpCenter: undefined;
@@ -81,7 +81,10 @@ const AppStack = () => (
     <Stack.Screen name="AddPaymentMethod" component={AddPaymentMethodScreen} />
 
     {/* Shipping */}
-    <Stack.Screen name="ShippingAddresses" component={ShippingAddressesScreen} />
+    <Stack.Screen
+      name="ShippingAddresses"
+      component={ShippingAddressesScreen}
+    />
     <Stack.Screen name="AddAddress" component={AddAddressScreen} />
     <Stack.Screen name="EditAddress" component={EditAddressScreen} />
 
@@ -99,8 +102,12 @@ const AppStack = () => (
 
 const MainNavigator = () => {
   // Wait for Redux-Persist to hydrate
-  const isHydrated = useSelector((state: RootState) => state._persist?.rehydrated);
-  const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
+  const isHydrated = useSelector(
+    (state: RootState) => state._persist?.rehydrated
+  );
+  const isAuthenticated = useSelector(
+    (state: RootState) => state.auth.isAuthenticated
+  );
 
   if (!isHydrated) {
     return (
